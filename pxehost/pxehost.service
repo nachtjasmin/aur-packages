@@ -1,0 +1,16 @@
+[Unit]
+Description=pxehost: netboot.xyz via a rootless Go binary
+Documentation=https://pxehost.com
+
+[Service]
+Type=exec
+DynamicUser=true
+ExecStart=/usr/bin/pxehost
+
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+PrivateTmp=true
+PrivateDevices=true
+PrivateUsers=full
+
+[Install]
+WantedBy=multi-user.target
