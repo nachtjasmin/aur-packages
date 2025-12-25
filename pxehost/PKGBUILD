@@ -1,0 +1,30 @@
+# Maintainer: nachtjasmin <nachtjasmin at posteo dot de>
+pkgname=pxehost
+pkgdesc='pxehost is a no-configuration, Go-stdlib-only, rootless PXE server.'
+pkgver=0.1.1 # renovate: datasource=github-tags depName=pxehost/pxehost
+pkgrel=1
+arch=('x86_64' 'i686' 'aarch64' 'armv7h')
+url='https://github.com/kluctl/kluctl/'
+license=('unknown')
+depends=('glibc')
+makedepends=('git' 'go')
+
+source=("https://github.com/pxehost/pxehost/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz" "pxehost.service")
+sha256sums=()
+
+build() {
+  export CGO_CFLAGS="${CFLAGS}"
+  export CGO_CPPFLAGS="$CPPFLAGS"
+  export CGO_CXXFLAGS="$CXXFLAGS"
+  export CGO_LDFLAGS="${LDFLAGS}"
+  export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
+
+  cd "$pkgname-$pkgver"
+
+  go build -o "$pkgname" ./cmd/pxehost/main.go
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  install -Dm755 "$pkgname" -t "$pkgdir"/usr/bin
+}
